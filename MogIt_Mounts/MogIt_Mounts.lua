@@ -9,14 +9,12 @@ local mounts = {
 };
 local list = {};
 local data = {
-	item = {},
+	display = {},
 	spell = {},
-	lvl = {},
-	class = {},
-	race = {},
+	item = {},
 };
 
-local function AddData(display,spell,item,lvl,class,race)
+local function AddData(display,spell,item)
 	data.item[display] = item;
 	data.spell[display] = spell;
 end
@@ -65,8 +63,13 @@ function module.FrameUpdate(module,self,value)
 	self.data.display = value;
 	self.data.spell = data.spell[value];
 	self.data.item = data.item[value];
-	self.model:SetDisplayInfo(value);
-end
+	self.model:RefreshUnit();
+	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
+	self.model:RefreshUnit();
+	self.model:SetCreature(value);
+	--print(value)
+	end
+--end
 
 function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
@@ -77,9 +80,9 @@ function module.OnEnter(module,self)
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
 	if self.data.item then
-		local _,link = mog:GetItemInfo(self.data.item,"ModelOnEnter");
-		if link then
-			GameTooltip:AddDoubleLine("Item:",link);
+		local itemName = GetItemInfo(self.data.item,"ModelOnEnter");
+		if itemName then
+			GameTooltip:AddDoubleLine("Item:",itemName);
 		end
 	end
 
