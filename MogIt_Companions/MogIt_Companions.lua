@@ -39,22 +39,24 @@ function module.FrameUpdate(module,self,value)
 	self.data.item = data.item[value];
 	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
 	self.model:SetCreature(value);
+	--print(value)
 end
 
 function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
-	
+	GameTooltip[mog] = true;
+
 	local name,_,icon = GetSpellInfo(self.data.spell);
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
 	if self.data.item then
 		local itemName = GetItemInfo(self.data.item);
-		if link then
+		if itemName then
 			GameTooltip:AddDoubleLine("Item:",itemName);
 		end
 	end
-	
+
 	GameTooltip:Show();
 end
 
@@ -100,9 +102,10 @@ function module.BuildList(module)
 	return list;
 end
 
-function module.Help(module)
-	GameTooltip:AddDoubleLine("Spell chat link","Shift + Left click",0,1,0,1,1,1);
-	GameTooltip:AddDoubleLine("Item chat link","Ctrl + Left click",0,1,0,1,1,1);
-	GameTooltip:AddDoubleLine("Spell URL","Shift + Right click",0,1,0,1,1,1);
-	GameTooltip:AddDoubleLine("Item URL","Ctrl + Right click",0,1,0,1,1,1);
-end
+module.Help = {
+
+	"Shift-left click to link spell",
+	"Shift-right click for spell URL",
+	"Ctrl-left click to link item",
+	"Ctrl-right click for item URL",
+};

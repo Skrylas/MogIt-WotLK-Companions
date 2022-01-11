@@ -1,5 +1,6 @@
 local a,t=...
 local c=t.AddCompanion
+--c(DisplayID,SpellID,ItemID)
 c(2671,4055,4401)
 c(7385,10673,8485)
 c(7384,10674,8486)

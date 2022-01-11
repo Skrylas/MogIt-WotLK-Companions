@@ -1,35 +1,22 @@
 local MogIt_Mounts,m = ...;
 local mog = MogIt;
 
-local module = mog:RegisterModule(MogIt_Mounts,tonumber(GetAddOnMetadata(MogIt_Mounts, "X-MogItModuleVersion")));
-local mounts = {
-	Ground = {},
-	Flying = {},
-};
+local module = mog:GetModule("MogIt_Mounts") or mog:RegisterModule("MogIt_Mounts",{});
+local mounts = {};
 local list = {};
 local data = {
 	spell = {},
 	item = {},
 };
 
-local function AddData(display,spell,item)
+function m.AddMount(display,spell,item)
+	tinsert(mounts,display);
+	data.spell[display] = spell;	
 	data.item[display] = item;
-	data.spell[display] = spell;
 end
 
-function m.AddGround(display,...)
-	tinsert(mounts.Ground,display);
-	AddData(display,...);
-end
-
-function m.AddFlying(display,...)
-	tinsert(mounts.Flying,display);
-	AddData(display,...);
-end
-
-local function DropdownTier2(self)
-	self.arg1.active = self.value;
-	mog:SetModule(self.arg1,"Mounts - "..self.value);
+local function DropdownTier1(self)
+	mog:SetModule(self.value,"Mounts");
 	CloseDropDownMenus();
 end
 
@@ -40,20 +27,9 @@ function module.Dropdown(module,tier)
 		info.text = module.label;
 		info.value = module;
 		info.colorCode = "\124cFF00FF00";
-		info.hasArrow = true;
-		info.keepShownOnClick = true;
 		info.notCheckable = true;
+		info.func = DropdownTier1;
 		UIDropDownMenu_AddButton(info,tier);
-	elseif tier == 2 then
-		for k,v in pairs(mounts) do
-			info = UIDropDownMenu_CreateInfo();
-			info.text = k;
-			info.value = k;
-			info.notCheckable = true;
-			info.func = DropdownTier2;
-			info.arg1 = module;
-			UIDropDownMenu_AddButton(info,tier);
-		end
 	end
 end
 
@@ -65,7 +41,6 @@ function module.FrameUpdate(module,self,value)
 	self.model:SetCreature(value);
 	--print(value)
 end
-
 
 function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
@@ -121,7 +96,7 @@ end
 
 function module.BuildList(module)
 	wipe(list);
-	for k,v in ipairs(mounts[module.active]) do
+	for k,v in ipairs(mounts) do
 		tinsert(list,v);
 	end
 	return list;

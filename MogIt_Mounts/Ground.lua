@@ -1,5 +1,5 @@
 local a,t=...
-local m=t.AddGround
+local m=t.AddMount
 --m(DisplayID,SpellID,ItemID)
 m(358,580,1132)
 m(308,470,2411)

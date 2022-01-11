@@ -12,6 +12,4 @@
 ## X-Curse-Repository-ID: wow/mogit_mounts/mainline
 
 MogIt_Mounts.lua
-Ground.lua
-Flying.lua
-Aquatic.lua
+Mounts.lua
