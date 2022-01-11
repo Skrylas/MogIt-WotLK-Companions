@@ -2,9 +2,10 @@
 ## Title: MogIt_Companions
 ## Notes: Companions module for MogIt
 ## Author: Aelobin (The Maelstrom EU)
-## Version: 2.1
+## Version: 3.0
 ## LoadOnDemand: 1
 ## RequiredDeps: MogIt
+## X-MogItModuleVersion: 2
 ## X-Curse-Packaged-Version: v2.1
 ## X-Curse-Project-Name: MogIt_Companions
 ## X-Curse-Project-ID: mogit_companions

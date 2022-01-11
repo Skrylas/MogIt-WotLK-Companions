@@ -5,14 +5,14 @@ local module = mog:GetModule("MogIt_Companions") or mog:RegisterModule("MogIt_Co
 local companions = {};
 local list = {};
 local data = {
-	item = {},
 	spell = {},
+	item = {},
 };
 
 function c.AddCompanion(display,spell,item)
 	tinsert(companions,display);
-	data.item[display] = item;
 	data.spell[display] = spell;
+	data.item[display] = item;
 end
 
 local function DropdownTier1(self)
@@ -37,7 +37,8 @@ function module.FrameUpdate(module,self,value)
 	self.data.display = value;
 	self.data.spell = data.spell[value];
 	self.data.item = data.item[value];
-	self.model:SetDisplayInfo(value);
+	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
+	self.model:SetCreature(value);
 end
 
 function module.OnEnter(module,self)
@@ -48,9 +49,9 @@ function module.OnEnter(module,self)
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
 	if self.data.item then
-		local _,link = GetItemInfo(self.data.item);
+		local itemName = GetItemInfo(self.data.item);
 		if link then
-			GameTooltip:AddDoubleLine("Item:",link);
+			GameTooltip:AddDoubleLine("Item:",itemName);
 		end
 	end
 	
@@ -86,7 +87,8 @@ end
 function module.Unlist(module)
 	wipe(list);
 	for k,v in ipairs(mog.models) do
-		v.model:SetUnit("PLAYER");
+		--v.model:SetUnit("PLAYER");
+		v.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
 	end
 end
 

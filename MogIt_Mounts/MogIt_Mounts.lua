@@ -5,11 +5,9 @@ local module = mog:RegisterModule(MogIt_Mounts,tonumber(GetAddOnMetadata(MogIt_M
 local mounts = {
 	Ground = {},
 	Flying = {},
-	Aquatic = {},
 };
 local list = {};
 local data = {
-	display = {},
 	spell = {},
 	item = {},
 };
@@ -63,13 +61,11 @@ function module.FrameUpdate(module,self,value)
 	self.data.display = value;
 	self.data.spell = data.spell[value];
 	self.data.item = data.item[value];
-	self.model:RefreshUnit();
 	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
-	self.model:RefreshUnit();
 	self.model:SetCreature(value);
 	--print(value)
-	end
---end
+end
+
 
 function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
@@ -80,7 +76,7 @@ function module.OnEnter(module,self)
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
 	if self.data.item then
-		local itemName = GetItemInfo(self.data.item,"ModelOnEnter");
+		local itemName = GetItemInfo(self.data.item);
 		if itemName then
 			GameTooltip:AddDoubleLine("Item:",itemName);
 		end
@@ -118,7 +114,8 @@ end
 function module.Unlist(module)
 	wipe(list);
 	for k,v in ipairs(mog.models) do
-		v.model:SetUnit("PLAYER");
+		--v.model:SetUnit("PLAYER");
+		v.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
 	end
 end
 
