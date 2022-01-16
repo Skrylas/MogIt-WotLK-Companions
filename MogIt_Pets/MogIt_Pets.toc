@@ -12,6 +12,6 @@
 ## X-Curse-Repository-ID: wow/mogit_pets/mainline
 
 MogIt_Pets.lua
-Pets\Pets.xml
+Pets.lua
 
 Filters.lua
