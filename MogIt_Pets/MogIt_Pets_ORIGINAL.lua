@@ -1,10 +1,8 @@
 local MogIt_Pets,p = ...;
 local mog = MogIt;
 
-local module = mog:GetModule("MogIt_Pets") or mog:RegisterModule("MogIt_Pets",{});
+local module = mog:RegisterModule(MogIt_Pets,tonumber(GetAddOnMetadata(MogIt_Pets, "X-MogItModuleVersion")));
 local pets = {};
-local list = {};
-local display = {};
 local data = {
 	display = {},
 	family = {},
@@ -13,7 +11,8 @@ local data = {
 	name = {},
 	rare = {},
 };
-
+local list = {};
+local display = {};
 p.family = {
 	name = {},
 	icon = {},
@@ -65,9 +64,7 @@ function module.FrameUpdate(module,self,value)
 	self.data.pets = display[value];
 	self.data.cycle = 1;
 	self.data.pet = type(self.data.pets) ~= "table" and self.data.pets or self.data.pets[self.data.cycle];
---	self.model:SetDisplayInfo(self.data.display);
-	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
-	self.model:SetCreature(self.data.pet);
+	self.model:SetDisplayInfo(self.data.display);
 end
 
 function module.OnEnter(module,self)
