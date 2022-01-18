@@ -6,13 +6,17 @@ local mounts = {};
 local list = {};
 local data = {
 	spell = {},
+	name = {},
+	display = {},
 	item = {},
 };
 
-function m.AddMount(display,spell,item)
-	tinsert(mounts,display);
-	data.spell[display] = spell;	
-	data.item[display] = item;
+function m.AddMount(spell,name,display,item)
+	tinsert(mounts,spell);
+	data.spell[spell] = spell;
+	data.name[spell] = name;
+	data.display[spell] = display;
+	data.item[spell] = item;
 end
 
 local function DropdownTier1(self)
@@ -34,11 +38,11 @@ function module.Dropdown(module,tier)
 end
 
 function module.FrameUpdate(module,self,value)
-	self.data.display = value;
+	self.data.display = data.display[value];
 	self.data.spell = data.spell[value];
 	self.data.item = data.item[value];
 	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
-	self.model:SetCreature(value);
+	self.model:SetCreature(self.data.display);
 	--print(value)
 end
 
@@ -46,7 +50,9 @@ function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
 	GameTooltip[mog] = true;
-
+	
+	local icon = "";
+	
 	local name,_,icon = GetSpellInfo(self.data.spell);
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
@@ -94,18 +100,30 @@ function module.Unlist(module)
 	end
 end
 
+function module.GetFilterArgs(filter,mount)
+	if filter == "name" then
+--		return data.name[mount];
+		return GetSpellInfo(data.spell[mount]);
+	end
+end
+
 function module.BuildList(module)
 	wipe(list);
 	for k,v in ipairs(mounts) do
-		tinsert(list,v);
+		if mog:CheckFilters(module,v) then
+				tinsert(list,v);
+		end
 	end
 	return list;
 end
 
 module.Help = {
-
 	"Shift-left click to link spell",
 	"Shift-right click for spell URL",
 	"Ctrl-left click to link item",
 	"Ctrl-right click for item URL",
+};
+
+module.filters = {
+	"name",
 };

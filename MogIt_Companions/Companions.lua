@@ -1,6 +1,6 @@
 local a,t=...
 local c=t.AddCompanion
---c(DisplayID,SpellID,ItemID)
+--c(npcID,name,spellID,itemID)
 c(2671,4055,4401)
 c(7380,10677,8490)
 c(7381,10678,8488)

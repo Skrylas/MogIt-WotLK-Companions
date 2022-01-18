@@ -86,6 +86,12 @@ function module.OnClick(module,self,btn)
 	end
 end
 
+function module.GetFilterArgs(filter,spell)
+	if filter == "name" then
+		return GetSpellInfo(data.spell[spell]);
+	end
+end
+
 function module.Unlist(module)
 	wipe(list);
 	for k,v in ipairs(mog.models) do
@@ -94,18 +100,30 @@ function module.Unlist(module)
 	end
 end
 
+function module.GetFilterArgs(filter,companion)
+	if filter == "name" then
+--		return data.name[companion];
+		return GetSpellInfo(data.spell[companion]);
+	end
+end
+
 function module.BuildList(module)
 	wipe(list);
 	for k,v in ipairs(companions) do
-		tinsert(list,v);
+		if mog:CheckFilters(module,v) then
+				tinsert(list,v);
+		end
 	end
 	return list;
 end
 
 module.Help = {
-
 	"Shift-left click to link spell",
 	"Shift-right click for spell URL",
 	"Ctrl-left click to link item",
 	"Ctrl-right click for item URL",
+};
+
+module.filters = {
+	"name",
 };

@@ -7,10 +7,11 @@ local list = {};
 local display = {};
 local data = {
 	display = {},
+	name = {},	
 	family = {},
 	lvl = {},
+	item = {},
 	zone = {},
-	name = {},
 	rare = {},
 };
 
@@ -26,11 +27,12 @@ function p.AddFamily(id,name,icon,exotic)
 	p.family.exotic[id] = exotic;
 end
 
-local function AddData(id,display,name,family,lvl,zone,rare)
+local function AddData(id,display,name,family,lvl,item,zone,rare)
 	data.display[id] = display;
 	data.name[id] = name;
 	data.family[id] = family;
 	data.lvl[id] = lvl;
+	data.item[id] = item;
 	data.zone[id] = zone;
 	data.rare[id] = rare;
 end
@@ -61,7 +63,7 @@ function module.Dropdown(module,tier)
 end
 
 function module.FrameUpdate(module,self,value)
-	self.data.display = value;
+--	self.data.display = value;
 	self.data.pets = display[value];
 	self.data.cycle = 1;
 	self.data.pet = type(self.data.pets) ~= "table" and self.data.pets or self.data.pets[self.data.cycle];
@@ -90,6 +92,12 @@ function module.OnEnter(module,self)
 	end
 	
 	GameTooltip:AddDoubleLine(icon..(data.name[self.data.pet] or " "),(type(self.data.pets) == "table") and (#self.data.pets > 1) and ("Pet %d/%d"):format(self.data.cycle,#self.data.pets),0,1,0,1,0,0);
+	if data.item[self.data.pet] then
+		local itemName = GetItemInfo(data.item[self.data.pet]);
+		if itemName then
+			GameTooltip:AddDoubleLine("Item:",itemName);
+		end
+	end
 	if data.zone[self.data.pet] then
 		local zone = GetMapNameByID(data.zone[self.data.pet]);
 		if zone then
@@ -120,7 +128,12 @@ end
 
 function module.OnClick(module,self,btn)
 	if btn == "LeftButton" then
-		if type(self.data.pets) == "table" then
+		if IsShiftKeyDown() then
+			local _,link = GetItemInfo(data.item[self.data.pet]);
+			if link then
+				ChatEdit_InsertLink(link);
+			end
+		elseif type(self.data.pets) == "table" then
 			self.data.cycle = (self.data.cycle == #self.data.pets and 1) or (self.data.cycle + 1);
 			self.data.pet = self.data.pets[self.data.cycle];
 			module:OnEnter(self);
@@ -139,7 +152,9 @@ function module.Unlist(module)
 end
 
 function module.GetFilterArgs(filter,pet)
-	if filter == "level" then
+	if filter == "name" then
+		return data.name[pet];
+	elseif filter == "level" then
 		return data.lvl[pet];
 	elseif filter == "PetFamily" then
 		return data.family[pet];
@@ -169,17 +184,13 @@ function module.BuildList(module)
 	return list;
 end
 
-function module.Help(module)
-	GameTooltip:AddDoubleLine("Change pet","Left click",0,1,0,1,1,1);
-	GameTooltip:AddDoubleLine("Pet URL","Right click",0,1,0,1,1,1);
-end
-
 module.Help = {
 	"Left click to cycle through pets",
 	"Right click for pet URL",
 };
 
 module.filters = {
+	"name",
 	"level",
 	"PetFamily",
 	"PetExotic",
