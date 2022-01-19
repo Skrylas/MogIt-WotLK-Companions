@@ -76,52 +76,58 @@ function module.OnEnter(module,self)
 	if not self or not self.data.pet then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
 	GameTooltip[mog] = true;	
+	
+	if IsAltKeyDown() and data.item[self.data.pet] then
+		GameTooltip:SetHyperlink('|Hitem:'..data.item[self.data.pet]..'|h')
+	end
 
-	local icon = "";
-	local fam;
-	if data.family[self.data.pet] then
-		if p.family.icon[data.family[self.data.pet]] then
-			icon = icon.."\124TInterface\\Icons\\"..p.family.icon[data.family[self.data.pet]]..":18\124t ";
-		end
-		if p.family.name[data.family[self.data.pet]] then
-			fam = p.family.name[data.family[self.data.pet]];
-			if p.family.exotic[data.family[self.data.pet]] then
-				fam = fam.." \124cFFFF9900(Exotic)\124r";
-			end
-		end
+	if not IsAltKeyDown() then
+		local icon = "";	
+		local fam;	
+		if	data.family[self.data.pet] then		
+			if p.family.icon[data.family[self.data.pet]] then		
+				icon = icon.."\124TInterface\\Icons\\"..p.family.icon[data.family[self.data.pet]]..":18\124t ";	
+			end		
+			if p.family.name[data.family[self.data.pet]] then		
+				fam = p.family.name[data.family[self.data.pet]];	
+				if p.family.exotic[data.family[self.data.pet]] then	
+					fam = fam.." \124cFFFF9900(Exotic)\124r";
+				end	
+			end		
+		end		
+					
+		GameTooltip:AddDoubleLine(icon..(data.name[self.data.pet] or " "),(type(self.data.pets) == "table") and (#self.data.pets > 1) and ("Pet %d/%d"):format(self.data.cycle,#self.data.pets),0,1,0,1,0,0);			
+		if data.item[self.data.pet] then			
+			local itemName = GetItemInfo(data.item[self.data.pet]);		
+			if itemName then		
+				GameTooltip:AddDoubleLine("Item:",itemName);	
+			end		
+		end			
+		if data.zone[self.data.pet] then			
+			local zone = GetMapNameByID(data.zone[self.data.pet]);		
+			if zone then		
+				GameTooltip:AddDoubleLine("Zone:",zone,nil,nil,nil,1,1,1);	
+			end		
+		end			
+					
+		GameTooltip:AddLine(" ");			
+		local level;			
+		if data.lvl[self.data.pet] then			
+			level = ""..data.lvl[self.data.pet];		
+		end			
+		if data.rare[self.data.pet] then			
+			level = (level and level.." " or "").."\124cFF999999(Rare)\124r";		
+		end			
+		if level then			
+			GameTooltip:AddDoubleLine("Level:",level,nil,nil,nil,1,1,1);		
+		end			
+		if fam then			
+			GameTooltip:AddDoubleLine("Family:",fam,nil,nil,nil,1,1,1);		
+		end			
+					
+		GameTooltip:AddLine(" ");			
+		GameTooltip:AddDoubleLine("NPC ID:",self.data.pet,nil,nil,nil,1,1,1);			
 	end
-	
-	GameTooltip:AddDoubleLine(icon..(data.name[self.data.pet] or " "),(type(self.data.pets) == "table") and (#self.data.pets > 1) and ("Pet %d/%d"):format(self.data.cycle,#self.data.pets),0,1,0,1,0,0);
-	if data.item[self.data.pet] then
-		local itemName = GetItemInfo(data.item[self.data.pet]);
-		if itemName then
-			GameTooltip:AddDoubleLine("Item:",itemName);
-		end
-	end
-	if data.zone[self.data.pet] then
-		local zone = GetMapNameByID(data.zone[self.data.pet]);
-		if zone then
-			GameTooltip:AddDoubleLine("Zone:",zone,nil,nil,nil,1,1,1);
-		end
-	end
-	
-	GameTooltip:AddLine(" ");
-	local level;
-	if data.lvl[self.data.pet] then
-		level = ""..data.lvl[self.data.pet];
-	end
-	if data.rare[self.data.pet] then
-		level = (level and level.." " or "").."\124cFF999999(Rare)\124r";
-	end
-	if level then
-		GameTooltip:AddDoubleLine("Level:",level,nil,nil,nil,1,1,1);
-	end
-	if fam then
-		GameTooltip:AddDoubleLine("Family:",fam,nil,nil,nil,1,1,1);
-	end
-	
-	GameTooltip:AddLine(" ");
-	GameTooltip:AddDoubleLine("ID:",self.data.pet,nil,nil,nil,1,1,1);
 	
 	GameTooltip:Show();
 end
