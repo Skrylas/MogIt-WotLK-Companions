@@ -6,13 +6,17 @@ local companions = {};
 local list = {};
 local data = {
 	spell = {},
+	display = {},
+	name = {},
 	item = {},
 };
 
-function c.AddCompanion(display,spell,item)
-	tinsert(companions,display);
-	data.spell[display] = spell;
-	data.item[display] = item;
+function c.AddCompanion(spell,display,name,item)
+	tinsert(companions,spell);
+	data.spell[spell] = spell;
+	data.display[spell] = display;	
+	data.name[spell] = name;
+	data.item[spell] = item;
 end
 
 local function DropdownTier1(self)
@@ -34,11 +38,11 @@ function module.Dropdown(module,tier)
 end
 
 function module.FrameUpdate(module,self,value)
-	self.data.display = value;
+	self.data.display = data.display[value];
 	self.data.spell = data.spell[value];
 	self.data.item = data.item[value];
 	self.model:SetModel("Interface\\Buttons\\TalkToMeQuestion_Grey.mdx");
-	self.model:SetCreature(value);
+	self.model:SetCreature(self.data.display);
 	--print(value)
 end
 
@@ -46,7 +50,7 @@ function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
 	GameTooltip[mog] = true;
-
+	
 	local name,_,icon = GetSpellInfo(self.data.spell);
 	local link = GetSpellLink(self.data.spell);
 	GameTooltip:AddLine("\124T"..icon..":18\124t "..(link or name),0,1,0);
@@ -83,12 +87,6 @@ function module.OnClick(module,self,btn)
 				mog:ShowURL(self.data.item);
 			end
 		end
-	end
-end
-
-function module.GetFilterArgs(filter,spell)
-	if filter == "name" then
-		return GetSpellInfo(data.spell[spell]);
 	end
 end
 

@@ -6,16 +6,16 @@ local mounts = {};
 local list = {};
 local data = {
 	spell = {},
-	name = {},
 	display = {},
+	name = {},
 	item = {},
 };
 
-function m.AddMount(spell,name,display,item)
+function m.AddMount(spell,display,name,item)
 	tinsert(mounts,spell);
 	data.spell[spell] = spell;
+	data.display[spell] = display;	
 	data.name[spell] = name;
-	data.display[spell] = display;
 	data.item[spell] = item;
 end
 
@@ -50,8 +50,6 @@ function module.OnEnter(module,self)
 	if not self or not self.data.display then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
 	GameTooltip[mog] = true;
-	
-	local icon = "";
 	
 	local name,_,icon = GetSpellInfo(self.data.spell);
 	local link = GetSpellLink(self.data.spell);
