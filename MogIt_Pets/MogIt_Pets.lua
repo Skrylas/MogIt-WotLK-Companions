@@ -10,7 +10,6 @@ local data = {
 	name = {},	
 	family = {},
 	lvl = {},
-	item = {},
 	zone = {},
 	rare = {},
 };
@@ -27,12 +26,11 @@ function p.AddFamily(id,name,icon,exotic)
 	p.family.exotic[id] = exotic;
 end
 
-local function AddData(id,display,name,family,lvl,item,zone,rare)
+local function AddData(id,display,name,family,lvl,zone,rare)
 	data.display[id] = display;
 	data.name[id] = name;
 	data.family[id] = family;
 	data.lvl[id] = lvl;
-	data.item[id] = item;
 	data.zone[id] = zone;
 	data.rare[id] = rare;
 end
@@ -76,10 +74,6 @@ function module.OnEnter(module,self)
 	if not self or not self.data.pet then return end;
 	GameTooltip:SetOwner(self,"ANCHOR_RIGHT");
 	GameTooltip[mog] = true;	
-	
-	if IsAltKeyDown() and data.item[self.data.pet] then
-		GameTooltip:SetHyperlink('|Hitem:'..data.item[self.data.pet]..'|h')
-	end
 
 	if not IsAltKeyDown() then
 		local icon = "";	
@@ -97,12 +91,7 @@ function module.OnEnter(module,self)
 		end		
 					
 		GameTooltip:AddDoubleLine(icon..(data.name[self.data.pet] or " "),(type(self.data.pets) == "table") and (#self.data.pets > 1) and ("Pet %d/%d"):format(self.data.cycle,#self.data.pets),0,1,0,1,0,0);			
-		if data.item[self.data.pet] then			
-			local itemName = GetItemInfo(data.item[self.data.pet]);		
-			if itemName then		
-				GameTooltip:AddDoubleLine("Item:",itemName);	
-			end		
-		end			
+		
 		if data.zone[self.data.pet] then			
 			local zone = GetMapNameByID(data.zone[self.data.pet]);		
 			if zone then		
